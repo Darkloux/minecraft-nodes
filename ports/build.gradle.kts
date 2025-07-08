@@ -14,7 +14,7 @@ version = ""
 val VERSION = "0.0.9"
 
 // jvm target
-val JVM = 16 // 1.8 for 8, 11 for 11
+val JVM = 17 // 1.8 for 8, 11 for 11, 17 for 17
 
 // base of output jar name
 val OUTPUT_JAR_NAME = "nodes-ports"
@@ -24,8 +24,8 @@ var target = ""
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.6.10"
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("org.jetbrains.kotlin.jvm") version "1.8.21"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     // maven() // no longer needed in gradle 7
 
     // Apply the application plugin to add support for building a CLI application.
@@ -70,7 +70,7 @@ dependencies {
     // compileOnly("com.google.code.gson:gson:2.8.6")
 
     // put spigot/paper on path otherwise kotlin vs code plugin screeches
-    api("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
+    api("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
 
     // nodes (local repo)
     // this must be compiled for same minecraft version
@@ -97,6 +97,10 @@ dependencies {
         target = "1.18"
         // spigot/paper api
         compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT")
+    } else if ( project.hasProperty("1.19") == true ) {
+        target = "1.19"
+        // spigot/paper api
+        compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
     }
 }
 
@@ -109,14 +113,14 @@ tasks {
     named<ShadowJar>("shadowJar") {
         // verify valid target minecraft version
         doFirst {
-            val supportedMinecraftVersions = setOf("1.12", "1.16", "1.18")
+            val supportedMinecraftVersions = setOf("1.12", "1.16", "1.18", "1.19")
             if ( !supportedMinecraftVersions.contains(target) ) {
-                throw Exception("Invalid Minecraft version! Supported versions are: 1.12, 1.16, 1.18")
+                throw Exception("Invalid Minecraft version! Supported versions are: 1.12, 1.16, 1.18, 1.19")
             }
         }
 
         classifier = ""
-        configurations = mutableListOf(project.configurations.named("resolvableImplementation").get())
+        configurations = listOf(project.configurations.getByName("resolvableImplementation"))
     }
 }
 

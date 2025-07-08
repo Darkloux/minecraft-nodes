@@ -14,7 +14,7 @@ version = ""
 val VERSION = "0.0.10"
 
 // jvm target
-val JVM = 16 // 1.8 for 8, 11 for 11
+val JVM = 17 // 1.8 for 8, 11 for 11, 17 for 17
 
 // base of output jar name
 val OUTPUT_JAR_NAME = "nodes"
@@ -24,8 +24,8 @@ var target = ""
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.6.10"
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("org.jetbrains.kotlin.jvm") version "1.8.21"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     // maven() // no longer needed in gradle 7
 
     // Apply the application plugin to add support for building a CLI application.
@@ -39,6 +39,9 @@ repositories {
     
     maven { // paper
         url = uri("https://papermc.io/repo/repository/maven-public/")
+    }
+    maven { // spigot
+        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }
     maven { // protocol lib
         url = uri("https://repo.dmulloy2.net/nexus/repository/public/")
@@ -69,14 +72,14 @@ dependencies {
     }
 
     // google json
-    compileOnly("com.google.code.gson:gson:2.8.6")
-    configurations["resolvableImplementation"]("com.google.code.gson:gson:2.8.6")
+    compileOnly("com.google.code.gson:gson:2.10.1")
+    configurations["resolvableImplementation"]("com.google.code.gson:gson:2.10.1")
     
     // put spigot/paper on path otherwise kotlin vs code plugin screeches
-    api("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
+    api("org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
 
     // protocol lib (nametag packets)
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
@@ -105,6 +108,13 @@ dependencies {
         // fast block edit internal lib
         compileOnly(files("./lib/block_edit/build/libs/block-edit-lib-1.18.jar"))
         configurations["resolvableImplementation"](files("./lib/block_edit/build/libs/block-edit-lib-1.18.jar"))
+    } else if ( project.hasProperty("1.19") == true ) {
+        target = "1.19"
+        // spigot/paper api
+        compileOnly("org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
+        // Note: block_edit lib may not be available for 1.19 yet
+        // compileOnly(files("./lib/block_edit/build/libs/block-edit-lib-1.19.jar"))
+        // configurations["resolvableImplementation"](files("./lib/block_edit/build/libs/block-edit-lib-1.19.jar"))
     }
 }
 
@@ -121,14 +131,14 @@ tasks {
     named<ShadowJar>("shadowJar") {
         // verify valid target minecraft version
         doFirst {
-            val supportedMinecraftVersions = setOf("1.12", "1.16", "1.18")
+            val supportedMinecraftVersions = setOf("1.12", "1.16", "1.18", "1.19")
             if ( !supportedMinecraftVersions.contains(target) ) {
-                throw Exception("Invalid Minecraft version! Supported versions are: 1.12, 1.16, 1.18")
+                throw Exception("Invalid Minecraft version! Supported versions are: 1.12, 1.16, 1.18, 1.19")
             }
         }
 
         classifier = ""
-        configurations = mutableListOf(project.configurations.named("resolvableImplementation").get())
+        configurations = listOf(project.configurations.getByName("resolvableImplementation"))
         relocate("com.google", "nodes.shadow.gson")
     }
 }

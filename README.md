@@ -33,10 +33,17 @@ This repository contains the following separate projects:
 
 ## 1. Building main server plugin
 Requirements:
-- Java JDK 16 (current plugin target java version)
+- Java JDK 17 (for Minecraft 1.19.4)
+- Java JDK 16 (for Minecraft 1.18)
+- Java JDK 11 (for Minecraft 1.16)
 
-**This build example will be for version 1.16.5, currently
-the only supported version.** 
+**Supported Minecraft versions:**
+- 1.12.2
+- 1.16.5
+- 1.18.1
+- 1.19.4 (latest)
+
+**This build example will be for version 1.19.4.** For other versions, replace `1.19` with the desired version in the commands below. 
 
 Building the main plugin requires Minecraft NMS, so first step
 will be to build spigot and craftbukkit jars:
@@ -46,21 +53,21 @@ will be to build spigot and craftbukkit jars:
 ### 1. Download BuildTools.jar: https://www.spigotmc.org/wiki/buildtools/#running-buildtools
 
 
-### 2. Run BuildTool.jar to build `spigot-1.16.5.jar`.
+### 2. Run BuildTool.jar to build `spigot-1.19.4.jar`.
 ```
-java -jar BuildTools.jar --rev 1.16.5
+java -jar BuildTools.jar --rev 1.19.4
 ```
 
-### 3. Put `spigot-1.16.5.jar` into `nodes/lib/block_edit/lib/`.
+### 3. Put `spigot-1.19.4.jar` into `nodes/lib/block_edit/lib/`.
 This folder should now have path:
 ```
-nodes/lib/block_edit/lib/spigot-1.16.5.jar
+nodes/lib/block_edit/lib/spigot-1.19.4.jar
 ```
 
 ### 4. Build `block_edit` lib:
 Go inside `nodes/lib/block_edit/` and run.
 ```
-./gradlew build -P 1.16
+./gradlew build -P 1.19
 ```
 *Note: this had to be split out because of a gson version 
 conflict between spigot and nodes. If this is resolved,
@@ -70,18 +77,27 @@ then fast block editing can be pushed into main source.*
 ### 5. Build final plugin `nodes.jar`:
 Go inside `nodes/` and run
 ```
-./gradlew build -P 1.16
+./gradlew build -P 1.19
 ```
 Built `.jar` will appear in `build/libs/*.jar`.
 
+### 6. Quick build using scripts:
+For convenience, use the provided build scripts:
+```
+# Windows
+build-1.19.bat
 
-### 6. *(Optional)* Build final plugin without `kotlin`:
+# Linux/macOS
+./build-1.19.sh
+```
+
+### 7. *(Optional)* Build final plugin without `kotlin`:
 By default the build process shadows kotlin runtime dependency
 into the `nodes.jar` so that it can be used as a standalone plugin.
 In situations where `kotlin` runtime is shared across plugins,
 this will build `nodes` without kotlin:
 ```
-./gradlew build -P 1.16 -P no-kotlin
+./gradlew build -P 1.19 -P no-kotlin
 ```
 Nodes instead has a soft dependency on any plugin named `kotlin`.
 This is intended for use with this kotlin runtime plugin:

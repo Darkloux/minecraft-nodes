@@ -80,7 +80,9 @@ public object Config {
         Material.STONE, // note: granite, diorite, and andesite are variants of stone in 1.12.2
         Material.ANDESITE,
         Material.GRANITE,
-        Material.DIORITE
+        Material.DIORITE,
+        Material.DEEPSLATE, // 1.17+
+        Material.TUFF       // 1.17+
     )
 
     // harvestable crop types affected by occupied territory tax
@@ -98,7 +100,7 @@ public object Config {
     //     Material.CACTUS
     // )
 
-    // version 1.16
+    // version 1.19
     public var cropTypes = EnumSet.of(
         Material.BEETROOTS,
         Material.CACTUS,
@@ -111,7 +113,10 @@ public object Config {
         Material.PUMPKIN,
         Material.SUGAR_CANE,
         Material.SWEET_BERRY_BUSH,
-        Material.WHEAT
+        Material.WHEAT,
+        Material.GLOW_BERRIES,    // 1.17+
+        Material.CAVE_VINES,      // 1.17+
+        Material.CAVE_VINES_PLANT // 1.17+
     )
 
     // map block type -> alternative editor name
@@ -121,6 +126,8 @@ public object Config {
         alternativeNames.put(Material.MELON_STEM, Material.MELON)
         alternativeNames.put(Material.PUMPKIN_STEM, Material.PUMPKIN)
         alternativeNames.put(Material.SWEET_BERRY_BUSH, Material.SWEET_BERRIES)
+        alternativeNames.put(Material.CAVE_VINES, Material.GLOW_BERRIES)
+        alternativeNames.put(Material.CAVE_VINES_PLANT, Material.GLOW_BERRIES)
 
         alternativeNames
     }()
@@ -141,10 +148,10 @@ public object Config {
     public var breedingMinSkyLight: Int = 14
 
     // min/max y levels allowed for crop growth and animal breeding
-    public var cropsMinYHeight: Int = 10
-    public var cropsMaxYHeight: Int = 255
-    public var breedingMinYHeight: Int = 10
-    public var breedingMaxYHeight: Int = 255
+    public var cropsMinYHeight: Int = -64    // 1.18+ expanded world height
+    public var cropsMaxYHeight: Int = 320    // 1.18+ expanded world height
+    public var breedingMinYHeight: Int = -64 // 1.18+ expanded world height
+    public var breedingMaxYHeight: Int = 320 // 1.18+ expanded world height
     
     // ===================================
     // afk kick time
@@ -273,7 +280,10 @@ public object Config {
         Material.DARK_OAK_FENCE,
         Material.JUNGLE_FENCE,
         Material.OAK_FENCE,
-        Material.SPRUCE_FENCE
+        Material.SPRUCE_FENCE,
+        Material.CRIMSON_FENCE,    // 1.16+
+        Material.WARPED_FENCE,     // 1.16+
+        Material.MANGROVE_FENCE    // 1.19+
         // Material.FENCE, // 1.12 only
     )
 
